@@ -15,10 +15,25 @@ server.get('/api/users', (req, res) => {
   })
   .catch(err => {
     res.status(500).json({
-      message: err,
-      success: false
+      error: "The users information could not be retrieved."
     });
   });
-})
+});
+
+server.post('/api/users', (req, res) => {
+  const userInfo = req.body;
+
+  db.insert(userInfo)
+    .then((user) => {
+      res.status(201).json({
+        success: true, user
+      })
+    })
+    .catch((err) => {
+      res.status(500).json({
+        error: "There was an error while saving the user to the database"
+      })
+    });
+});
 
 // console.log("Hey Brit")
