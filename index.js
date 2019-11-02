@@ -24,7 +24,6 @@ server.get('/api/users', (req, res) => {
 
 server.post('/api/users', (req, res) => {
   const userInfo = req.body;
-  // console.log(userInfo);
 
   db.insert(userInfo)
     .then((user) => {
