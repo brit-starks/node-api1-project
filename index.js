@@ -5,13 +5,24 @@ const db = require('./data/db');
 
 const server = express();
 
-server.listen(4000, () => {
-  console.log('server listening on port 4000')
+server.listen(4001, () => {
+  console.log('server listening on port 4001')
 });
 
 server.use(express.json());
 
 server.get('/api/users', (req, res) => {
+  db.find().then(users => {
+    res.status(200).json(users);
+  })
+  .catch(err => {
+    res.status(500).json({
+      error: "The users information could not be retrieved."
+    });
+  });
+});
+
+server.get('/api/users/:id', (req, res) => {
   db.find().then(users => {
     res.status(200).json(users);
   })
@@ -45,16 +56,16 @@ server.delete('/api/users/:id', (req, res) =>{
     if (deletedUser) {
       res.status(204).end();
     } else {
-      res.status(404).json({message: `Unable to find id=${id}`})
+      res.status(404).json({message: `Unable to find id: ${id}`})
     }
   })
   .catch(err => {
     res.status(500).json({ error: "The user could not be removed"})
-  })
-})
+  });
+});
 
 server.put('/api/users/:id', (req, res) => {
-  const {id} = req.params;
+  const { id } = req.params;
   const userInfo = req.body;
 
   db.update(id, userInfo)
@@ -62,7 +73,7 @@ server.put('/api/users/:id', (req, res) => {
     if (user) {
       res.status(200).json({
         success: true, user
-      })
+      });
     } else {
       res.status(404).json({
         message: "The user with the specified ID does not exist."
@@ -74,6 +85,5 @@ server.put('/api/users/:id', (req, res) => {
     res.status(500).json({
       error: "The user information could not be modified.", err
     })
-  })
-})
-// console.log("Hey Brit")
+  });
+});
